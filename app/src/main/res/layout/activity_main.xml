@@ -5,7 +5,8 @@
     android:weightSum="3"
     android:orientation="vertical"
     android:background="@color/colorBlack"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/container">
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
