@@ -5,6 +5,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,21 +28,31 @@ public class MainActivity extends AppCompatActivity {
     AppCompatEditText answer;
     AppCompatTextView hint;
     AppCompatTextView question;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        intent=getIntent();
         container=findViewById(R.id.container);
         submit=findViewById(R.id.Submit);
         submit.setOnClickListener(submitButtonListener);
         question=findViewById(R.id.question);
         hint=findViewById(R.id.hint);
         answer=findViewById(R.id.answer);
-        readMovieData();
+        int value=intent.getIntExtra("key",-1);
+        if(value==0)
+        readMovieData("bollywood");
+        else
+            readMovieData("hollywood");
     }
     private List<MovieAux> BollywoodMovies=new ArrayList<>();
-    private void readMovieData() {
-        InputStream is = getResources().openRawResource(R.raw.bollywood);
+    private void readMovieData(String filename) {
+        InputStream is;
+        if(filename.equals("bollywood"))
+            is = getResources().openRawResource(R.raw.bollywood);
+        else
+            is = getResources().openRawResource(R.raw.hollywood);
         BufferedReader reader=new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         String line="";
         try {

@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:weightSum="3"
     android:orientation="vertical"
-    android:background="@color/colorBlack"
+    android:background="@drawable/purple"
     android:padding="16dp"
     android:id="@+id/container">
     <androidx.appcompat.widget.AppCompatTextView
@@ -64,7 +64,7 @@
         android:padding="5dp"
         android:text="Submit"
         android:fontFamily="monospace"
-        android:background="@color/colorWhite"
+        android:background="@drawable/round_shape"
         android:elevation="7dp"
         android:id="@+id/Submit"/>
     <androidx.appcompat.widget.AppCompatTextView
