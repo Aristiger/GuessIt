@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             idR=sharedPref.getInt("idH",0);
             readMovieData("hollywood");
         }
-        Toast.makeText(getApplicationContext(),"idR="+idR,Toast.LENGTH_LONG).show();
     }
     private void readMovieData(String filename) {
         InputStream is;
@@ -195,6 +194,5 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("idH",idR);
         }
         editor.apply();
-        Toast.makeText(getApplicationContext(),"Putting value"+Integer.toString(idR),Toast.LENGTH_LONG).show();
     }
 }
