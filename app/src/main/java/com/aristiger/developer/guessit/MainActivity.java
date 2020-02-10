@@ -5,7 +5,10 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -25,7 +28,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static int id=0;
-    static int id1=0;
+    static int idR=0;
+    static int value;
     static String answerValue;
     AppCompatButton hintButton;
     AppCompatButton submit;
@@ -34,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     AppCompatTextView hint;
     AppCompatTextView question;
     Intent intent;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+    private List<MovieAux> BollywoodMovies=new ArrayList<>();
+
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +56,21 @@ public class MainActivity extends AppCompatActivity {
         hint=findViewById(R.id.hint);
         hint.setVisibility(View.INVISIBLE);
         answer=findViewById(R.id.answer);
-        int value=intent.getIntExtra("key",-1);
+        sharedPref = getApplicationContext().getSharedPreferences("ID",MODE_PRIVATE);
+        editor=getSharedPreferences("ID",MODE_PRIVATE).edit();
+        value=intent.getIntExtra("key",-1);
         if(value==0)
-        readMovieData("bollywood");
+        {
+            idR=sharedPref.getInt("idB",0);
+            readMovieData("bollywood");
+        }
         else
+        {
+            idR=sharedPref.getInt("idH",0);
             readMovieData("hollywood");
+        }
+        Toast.makeText(getApplicationContext(),"idR="+idR,Toast.LENGTH_LONG).show();
     }
-    private List<MovieAux> BollywoodMovies=new ArrayList<>();
     private void readMovieData(String filename) {
         InputStream is;
         if(filename.equals("bollywood"))
@@ -77,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
             Log.wtf("MyActivity","Error reading data file on line "+line,e);
             e.printStackTrace();
         }
-        question.setText(BollywoodMovies.get(id1).getQuestion());
+        question.setText(BollywoodMovies.get(idR).getQuestion());
         hint.setText(Html.fromHtml("<b>Hint</b>"));
-        hint.append(": "+ BollywoodMovies.get(id1).getHint());
+        hint.append(": "+ BollywoodMovies.get(idR).getHint());
         hint.setVisibility(View.INVISIBLE);
-        answerValue=BollywoodMovies.get(id1).getAnswer();
+        answerValue=BollywoodMovies.get(idR).getAnswer().trim();
     }
 
     View.OnClickListener submitButtonListener=new View.OnClickListener(){
@@ -92,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 shiftToNextQuestion();
                 return;
             }
-            if (answer.getText().toString().equalsIgnoreCase(answerValue)) {
+            if (answer.getText().toString().trim().equalsIgnoreCase(answerValue)) {
                 Toast.makeText(getApplicationContext(), "Correct Answer!!!", Toast.LENGTH_SHORT).show();
                 shiftToNextQuestion();
             }
@@ -121,12 +138,12 @@ public class MainActivity extends AppCompatActivity {
         submit.setText("SUBMIT");
         hintButton.setText("TAKE HINT");
         answer.setText("");
-        id1 = (id1 + 1) % BollywoodMovies.size();
-        question.setText(BollywoodMovies.get(id1).getQuestion());
+        idR = (idR + 1) % BollywoodMovies.size();
+        question.setText(BollywoodMovies.get(idR).getQuestion());
         hint.setText(Html.fromHtml("<b>Hint</b>"));
-        hint.append(": " + BollywoodMovies.get(id1).getHint());
+        hint.append(": " + BollywoodMovies.get(idR).getHint());
         hint.setVisibility(View.INVISIBLE);
-        answerValue=BollywoodMovies.get(id1).getAnswer();
+        answerValue=BollywoodMovies.get(idR).getAnswer();
         switch (id) {
             case 1:
                 container.setBackgroundResource(R.drawable.behongo);
@@ -163,5 +180,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         id = (id + 1) % 11;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(value==0)
+        {
+            editor.putInt("idB",idR);
+        }
+        else
+        {
+            editor.putInt("idH",idR);
+        }
+        editor.apply();
+        Toast.makeText(getApplicationContext(),"Putting value"+Integer.toString(idR),Toast.LENGTH_LONG).show();
     }
 }
